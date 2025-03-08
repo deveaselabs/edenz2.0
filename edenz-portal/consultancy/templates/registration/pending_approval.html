@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-info text-white">
+            <h3 class="mb-0">Registration Submitted</h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-success">
+                <h4 class="alert-heading">Thank you for registering!</h4>
+                <p>Your business account is currently under review by our administration team.</p>
+                <hr>
+                <p class="mb-0">
+                    We will send an approval notification to <strong>{{ user.email }}</strong> 
+                    once your account is verified. This process typically takes 1-2 business days.
+                </p>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'business:login' %}" class="btn btn-primary">
+                    Return to Login
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

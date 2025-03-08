@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-info">
+        You have been logged out. 
+        <a href="{% url 'login' %}">Login Again</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="mb-4">Welcome to Edenz Consultants Portal</h1>
+            <p class="lead mb-5">Please select your login portal</p>
+            
+            <div class="row g-4">
+                <!-- Business Portal Card -->
+                <div class="col-md-6">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <i class="bi bi-building fs-1 text-primary"></i>
+                            <h3 class="my-3">Business Portal</h3>
+                            <p>For registered consultancy businesses to manage student applications</p>
+                            <a href="{% url 'business:login' %}" class="btn btn-primary">
+                                Business Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Processing Team Card -->
+                <div class="col-md-6">
+                    <div class="card h-100 shadow">
+                        <div class="card-body">
+                            <i class="bi bi-people fs-1 text-info"></i>
+                            <h3 class="my-3">Processing Team</h3>
+                            <p>For Edenz processing team members to review applications</p>
+                            <a href="{% url 'processing:login' %}" class="btn btn-info text-white">
+                                Processing Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Portal Card -->
+                <div class="col-12 mt-4">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <i class="bi bi-shield-lock fs-1 text-secondary"></i>
+                            <h3 class="my-3">Administrator Portal</h3>
+                            <p>For system administrators to manage users and settings</p>
+                            <a href="{% url 'admin_portal:dashboard' %}" class="btn btn-secondary">
+                                Admin Portal
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5">
+                <p class="text-muted">
+                    Don't have an account? 
+                    <a href="{% url 'business:register' %}" class="text-decoration-none">
+                        Register your business
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

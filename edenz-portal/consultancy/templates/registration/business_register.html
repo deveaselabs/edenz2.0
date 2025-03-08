@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Business Registration</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <fieldset class="form-group">
+                            {{ form|crispy }}
+                        </fieldset>
+                        <div class="form-group mt-4">
+                            <button class="btn btn-primary btn-lg w-100" type="submit">Register</button>
+                        </div>
+                    </form>
+                    <div class="border-top mt-3 pt-3 text-center">
+                        <small class="text-muted">
+                            {% comment %} Already Have An Account? <a class="ml-2" href="{% url 'login' %}">Sign In</a> {% endcomment %}
+                        </small>
+                    </div>
+                    <div class="text-center mt-2">
+                        {% comment %} <a href="{% url 'processing_register' %}" class="text-secondary">
+                            Register as Processing Team Member
+                        </a> {% endcomment %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

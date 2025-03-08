@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Processing Team Dashboard</h2>
+        <div class="text-end">
+            <p class="mb-0">{{ team_member.job_title }}</p>
+            <small class="text-muted">{{ team_member.department }} Department</small>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Businesses</h5>
+                    <p class="card-text display-4">{{ total_businesses }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Active Cases</h5>
+                    <p class="card-text display-4">{{ active_cases }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Reviews</h5>
+                    <p class="card-text display-4">{{ pending_reviews }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="card shadow mt-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Recent Activities</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                {% for message in recent_messages %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">
+                            <a href="{% url 'processing:student_chat' message.discussion.student.id %}">
+                                {{ message.discussion.student.name_of_applicant }}
+                            </a>
+                        </h6>
+                        <small class="text-muted">{{ message.timestamp|timesince }} ago</small>
+                    </div>
+                    <p class="mb-1 text-truncate">
+                        {{ message.sender.email }}: {{ message.message|truncatechars:50 }}
+                    </p>
+                    {% if message.document %}
+                    <small class="text-muted">
+                        <i class="bi bi-file-earmark"></i> {{ message.document.name|cut:"discussion_docs/" }}
+                    </small>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="text-center py-3">
+                    <p class="text-muted">No recent activities</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access -->
+    <div class="card shadow mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Quick Access</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <a href="{% url 'processing:business_list' %}" class="btn btn-primary w-100">
+                        <i class="bi bi-building"></i> Businesses
+                    </a>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <a href="#" class="btn btn-success w-100">
+                        <i class="bi bi-file-earmark-check"></i> Documents
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% include 'navbar.html' %}
+<div class="container-fluid chat-container">
+    <div class="row h-100">
+        <!-- Document Sidebar -->
+        {% comment %} <div class="col-md-3 border-end bg-light p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5>Documents</h5>
+                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#requestModal">
+                    Request Document
+                </button>
+            </div>
+            
+            <!-- Document List -->
+            <div class="list-group mb-3">
+                {% for doc in documents %}
+                <div class="list-group-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ doc.get_document_type_display }}</strong>
+                            <div class="text-muted small">
+                                {{ doc.versions.count }} versions
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <a href="{{ doc.versions.first.file.url }}" 
+                               class="btn btn-sm btn-outline-primary" download>
+                                <i class="bi bi-download"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Version History -->
+                    <div class="mt-2">
+                        {% for version in doc.versions.all|slice:":3" %}
+                        <div class="d-flex justify-content-between small py-1">
+                            <span>
+                                v{{ forloop.revcounter }}: 
+                                {{ version.uploaded_by.email|truncatechars:15 }}
+                            </span>
+                            <a href="{{ version.file.url }}" download>
+                                <i class="bi bi-download"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div> {% endcomment %}
+
+        <!-- Chat Main Area -->
+        <div class="col-md-12 d-flex flex-column p-0">
+            <!-- Chat Header -->
+            <div class="bg-info text-white p-3">
+                <h5 class="mb-0">
+                    {{ student.name_of_applicant }} - {{ student.program_of_interest }}
+                </h5>
+            </div>
+
+            <!-- Messages Container -->
+            <div class="flex-grow-1 p-3 overflow-auto" style="max-height: 65vh;">
+                {% for message in messages %}
+                <div class="chat-message mb-3 {% if message.sender == request.user %}chat-message-right{% else %}chat-message-left{% endif %}">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Message Header -->
+                            <div class="d-flex justify-content-between small text-muted mb-2">
+                                <span>{{ message.sender.email }}</span>
+                                <span>{{ message.timestamp|timesince }} ago</span>
+                            </div>
+                            
+                            <!-- Message Content -->
+                            {% if message.document %}
+                            <div class="document-message mb-2">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-file-earmark me-2"></i>
+                                    <div>
+                                        <div>{{ message.document.name|cut:"discussion_docs/" }}</div>
+                                        <small class="text-muted">
+                                            {% if message.document.versions.count > 1 %}
+                                            (Version {{ message.document.versions.count }})
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <a href="{{ message.document.url }}" 
+                                       class="btn btn-sm btn-outline-primary" download>
+                                        Download
+                                    </a>
+                                    {% if message.sender == request.user %}
+                                    <button class="btn btn-sm btn-outline-warning" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#updateDocumentModal"
+                                            data-document-id="{{ message.document.id }}">
+                                        Update
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Message Text -->
+                            {% if message.message %}
+                            <div class="message-text">
+                                {{ message.message|linebreaksbr }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Message Input -->
+            <div class="border-top p-3">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="send_message">
+                    
+                    <div class="row g-2">
+                        <div class="col-md-8">
+                            <textarea name="message" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="file" name="document" class="form-control" 
+                                   accept=".pdf,.doc,.docx,.jpg,.png">
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+{% include 'chat/modals.html' %}
+{% endblock %}

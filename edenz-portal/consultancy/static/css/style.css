@@ -1,0 +1,14 @@
+.document-form {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+#add-document {
+    margin-top: 1rem;
+}
+
+/* Hide delete checkbox label */
+.form-check-label {
+    display: none;
+}

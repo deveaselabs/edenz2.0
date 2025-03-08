@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{{ request.user.businessprofile.company_name }} Dashboard</h2>
+        <a href="{% url 'business:add_student' %}" class="btn btn-success">
+            <i class="bi bi-person-plus"></i> Add Student
+        </a>
+    </div>
+    
+    <!-- Status Cards -->
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <p class="card-text display-4">{{ total_students }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Active Discussions</h5>
+                    <p class="card-text display-4">{{ active_discussions }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Documents</h5>
+                    <p class="card-text display-4">{{ pending_documents }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Discussions -->
+    <div class="card shadow mt-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Recent Discussions</h5>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                {% for discussion in recent_discussions %}
+                <a href="{% url 'business:student_chat' discussion.student.id %}" 
+                   class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1">{{ discussion.student.name_of_applicant }}</h6>
+                        <small class="text-muted">{{ discussion.updated_at|timesince }} ago</small>
+                    </div>
+                    <p class="mb-1 text-truncate">
+                        Last message: {{ discussion.messages.last.message|truncatechars:50 }}
+                    </p>
+                    <small>
+                        Processing Officer: {{ discussion.processing_officer.processingteamprofile.job_title }}
+                    </small>
+                </a>
+                {% empty %}
+                <div class="text-center py-3">
+                    <p class="text-muted">No active discussions</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card shadow mt-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Quick Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <a href="{% url 'business:student_list' %}" class="btn btn-primary w-100">
+                        <i class="bi bi-list-ul"></i> View Students
+                    </a>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <a href="{% url 'processing:business_list' %}" class="btn btn-info w-100">
+                        <i class="bi bi-chat-left-text"></i> Processing Team
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

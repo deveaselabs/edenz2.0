@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Registered Businesses</h2>
+    <div class="list-group">
+        {% for business in businesses %}
+        <a href="{% url 'processing:business_students' business.id %}" 
+           class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ business.businessprofile.company_name }}</h5>
+                <small>Registered {{ business.date_joined|timesince }} ago</small>
+            </div>
+            <p class="mb-1">Contact: {{ business.email }}</p>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

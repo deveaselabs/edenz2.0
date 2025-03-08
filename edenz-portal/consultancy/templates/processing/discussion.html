@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-info text-white">
+            <h4>Discussion for {{ student.name_of_applicant }}</h4>
+            <p class="mb-0">Business: {{ student.business.businessprofile.company_name }}</p>
+        </div>
+        
+        <div class="card-body" style="max-height: 60vh; overflow-y: auto;">
+            {% for message in messages %}
+            <div class="mb-3 {% if message.sender == request.user %}text-end{% endif %}">
+                <div class="card {% if message.sender == request.user %}bg-light{% else %}bg-white{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <small class="text-muted">{{ message.sender.email }}</small>
+                            <small class="text-muted">{{ message.timestamp|timesince }} ago</small>
+                        </div>
+                        <p class="mb-1">{{ message.message }}</p>
+                        {% if message.document %}
+                        <div class="mt-2">
+                            <a href="{{ message.document.url }}" 
+                               class="btn btn-sm btn-outline-success" 
+                               download>
+                                <i class="bi bi-file-earmark-arrow-down"></i>
+                                {{ message.document.name|cut:"discussion_docs/" }}
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card-footer">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8">
+                        <textarea name="message" 
+                                  class="form-control" 
+                                  rows="2" 
+                                  placeholder="Type your message..."></textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="file" 
+                               name="document" 
+                               class="form-control" 
+                               accept=".pdf,.doc,.docx,.jpg,.png">
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" 
+                                class="btn btn-primary w-100">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Simple polling for updates
+    function refreshMessages() {
+        fetch(window.location.href)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const newDoc = parser.parseFromString(html, 'text/html');
+                const newMessages = newDoc.querySelector('.card-body').innerHTML;
+                document.querySelector('.card-body').innerHTML = newMessages;
+            });
+    }
+    
+    // Refresh every 30 seconds
+    setInterval(refreshMessages, 30000);
+    </script>
+{% endblock %}

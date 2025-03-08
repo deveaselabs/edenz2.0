@@ -1,0 +1,15 @@
+{% if user.is_authenticated and user.user_type == 'PROCESSING' %}
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'processing:dashboard' %}">Processing Dashboard</a>
+</li>
+<div class="card shadow mt-4">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Quick Actions</h5>
+    </div>
+    <div class="card-body">
+        <a href="{% url 'processing:business_list' %}" class="btn btn-info">
+            View All Businesses
+        </a>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,78 @@
+<!-- Document Request Modal -->
+<div class="modal fade" id="requestModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Request Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="request_document">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Document Type</label>
+                        <select name="document_type" class="form-select">
+                            {% for value, name in Document.DOCUMENT_TYPES %}
+                            <option value="{{ value }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Due Date</label>
+                        <input type="date" name="due_date" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Send Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Document Update Modal -->
+<div class="modal fade" id="updateDocumentModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_document">
+                <input type="hidden" name="document_id" id="documentIdInput">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">New File</label>
+                        <input type="file" name="new_file" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Update Comment</label>
+                        <textarea name="comment" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Upload New Version</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle document update modal
+    const updateModal = document.getElementById('updateDocumentModal')
+    updateModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget
+        const documentId = button.getAttribute('data-document-id')
+        document.getElementById('documentIdInput').value = documentId
+    })
+    
+    // Auto-scroll to bottom of messages
+    const messageContainer = document.querySelector('.overflow-auto')
+    messageContainer.scrollTop = messageContainer.scrollHeight
+})
+</script>

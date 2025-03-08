@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+{%include "navbar.html"%}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h4>Edit Student Details</h4>
+            <p class="mb-0">Passport No: {{ student.passport_no }}</p>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Student Information Fields -->
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.name_of_applicant|as_crispy_field }}
+                        {{ form.father_name|as_crispy_field }}
+                        {{ form.student_cnic|as_crispy_field }}
+                        {{ form.fathers_cnic|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.email|as_crispy_field }}
+                        {{ form.fathers_occupation|as_crispy_field }}
+                        {{ form.contact_no|as_crispy_field }}
+                        {{ form.passport_no|as_crispy_field }}
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        {{ form.date_of_birth|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.name_of_country|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.program_of_interest|as_crispy_field }}
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        {{ form.address|as_crispy_field }}
+                    </div>
+                </div>
+
+                <!-- Document Upload Section -->
+                <div class="card mt-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5>Manage Documents</h5>
+                    </div>
+                    <div class="card-body">
+                        {{ document_formset.management_form }}
+                        <div id="document-forms">
+                            {% for form in document_formset %}
+                                <div class="row mb-3 document-form">
+                                    {{ form.id }}
+                                    <div class="col-md-4">
+                                        {{ form.document_type|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if form.instance.file %}
+                                            <div class="mb-2">
+                                                <a href="{{ form.instance.file.url }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                                    View Current Document
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                        {{ form.file|as_crispy_field }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        {% if form.instance.pk %}
+                                            <div class="form-check">
+                                                {{ form.DELETE|as_crispy_field }}
+                                                <label class="form-check-label">Delete</label>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="add-document">
+                            Add More Documents
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Update Details</button>
+                    <a href="{% url 'business:edit_student' student.id %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-document');
+    const totalForms = document.getElementById('id_documents-TOTAL_FORMS');
+    const formsContainer = document.getElementById('document-forms');
+    let formCount = parseInt(totalForms.value);
+
+    addButton.addEventListener('click', function() {
+        const newForm = document.querySelector('.document-form').cloneNode(true);
+        const formRegex = RegExp(`documents-(\\d){1}-`, 'g');
+        
+        // Update form indices
+        newForm.innerHTML = newForm.innerHTML.replace(
+            formRegex, 
+            `documents-${formCount}-`
+        );
+        
+        // Clear input values
+        newForm.querySelectorAll('input').forEach(input => {
+            if (input.name.includes('file')) {
+                input.value = '';
+                input.required = false;
+            }
+            if (input.name.includes('document_type')) {
+                input.selectedIndex = 0;
+            }
+        });
+
+        // Remove existing file preview
+        const previewLink = newForm.querySelector('a.btn-outline-info');
+        if (previewLink) previewLink.remove();
+
+        formsContainer.appendChild(newForm);
+        formCount++;
+        totalForms.value = formCount;
+    });
+});
+</script>
+{% endblock %}

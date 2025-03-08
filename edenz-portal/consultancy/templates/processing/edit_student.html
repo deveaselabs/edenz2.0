@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning text-white">
+            <h4>Edit Student: {{ student.name_of_applicant }}</h4>
+            <p class="mb-0">Business: {{ student.business.businessprofile.company_name }}</p>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row">
+                    <!-- Personal Details Column -->
+                    <div class="col-md-6">
+                        <h5>Personal Information</h5>
+                        {{ form.name_of_applicant|as_crispy_field }}
+                        {{ form.father_name|as_crispy_field }}
+                        {{ form.student_cnic|as_crispy_field }}
+                        {{ form.fathers_cnic|as_crispy_field }}
+                        {{ form.date_of_birth|as_crispy_field }}
+                    </div>
+
+                    <!-- Contact Details Column -->
+                    <div class="col-md-6">
+                        <h5>Contact Information</h5>
+                        {{ form.email|as_crispy_field }}
+                        {{ form.contact_no|as_crispy_field }}
+                        {{ form.passport_no|as_crispy_field }}
+                        {{ form.name_of_country|as_crispy_field }}
+                    </div>
+
+                    <!-- Program Details -->
+                    <div class="col-12 mt-3">
+                        <h5>Academic Information</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                {{ form.program_of_interest|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.application_date|as_crispy_field }}
+                            </div>
+                        </div>
+                        {{ form.address|as_crispy_field }}
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                    <a href="{% url 'processing:student_detail' student.id %}" 
+                       class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
